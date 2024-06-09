@@ -19,6 +19,7 @@
       padding: 2rem;
       background-color: #fff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
     }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
@@ -35,6 +36,7 @@
       max-width: 100%;
       display: block;
       margin: 1em 0;
+      border-radius: 8px;
     }
     figure {
       text-align: center;
@@ -48,6 +50,9 @@
       margin: 1em 0;
       border-collapse: collapse;
       width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
     }
     table caption {
       margin-bottom: 0.75em;
@@ -94,12 +99,24 @@
         font-size: 1.5em;
       }
     }
+    .video-container {
+      margin: 2em 0;
+      text-align: center;
+    }
+    .video-container iframe {
+      width: 100%;
+      height: 450px;
+      border-radius: 8px;
+    }
+    .center {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Final Project: Baby Monitor utilizing integrated microphone and CC3200 Launchpad</h1>
-<p class="author">Marcos Alvear and Donggeon Kim</p>
+  <h1 class="title">Final Project: Baby Monitor utilizing integrated microphone and CC3200 Launchpad</h1>
+  <p class="author">Marcos Alvear and Donggeon Kim</p>
 </header>
 <h1 id="description">Description</h1>
 <p>This project aims to prototype a device that utilizes a simple microphone that will be integrated with an external circuit that will be mounted in a corner of a room to analyze and notify the user of a loud noise/cry. The system leverages the CC3200 Launchpad for processing and is the center of communication between all the parts of the system like the OLED screen, the TV remote User input, and the email push notifications. Utilizing the CC3200’s onboard WiFi module we will communicate with AWS IoT for email notifications that will contain the machine states and volume detected level. This information will also be displayed on an OLED screen using SPI communication and will be the GUI for the User to interact with the system. The user will interact with the device using a Universal TV remote that will interact with the system via an IR signal receiving circuit, making the system an easy to use and set up system that can be utilized in a family home.</p>
@@ -107,64 +124,64 @@
 <h2 id="functional-specification">Functional Specification</h2>
 <p>The high-level behavior of the product is represented through a state machine. The system transitions through states based on the sound signals detected by the microphones, processing these signals to determine the sound’s location.</p>
 <ul>
-<li><p><strong>Idle State</strong>: The system waits for the User sent TV remote start signal to begin monitoring.</p></li>
-<li><p><strong>Monitoring State</strong>: Upon activation with the ST command, the system continuously monitors sound levels through the integrated microphone.</p></li>
-<li><p><strong>Detection State</strong>: When a loud noise is detected, the system will send an email notification containing the state and volume information.</p></li>
-<li><p><strong>Notification State</strong>: The system updates the OLED display with the “baby is crying” screen and triggers the LEDs to flash.</p></li>
-<li><p><strong>Reset State</strong>: After input from the User, the system resets and returns to the Monitoring State for further detections.</p></li>
+  <li><p><strong>Idle State</strong>: The system waits for the User sent TV remote start signal to begin monitoring.</p></li>
+  <li><p><strong>Monitoring State</strong>: Upon activation with the ST command, the system continuously monitors sound levels through the integrated microphone.</p></li>
+  <li><p><strong>Detection State</strong>: When a loud noise is detected, the system will send an email notification containing the state and volume information.</p></li>
+  <li><p><strong>Notification State</strong>: The system updates the OLED display with the “baby is crying” screen and triggers the LEDs to flash.</p></li>
+  <li><p><strong>Reset State</strong>: After input from the User, the system resets and returns to the Monitoring State for further detections.</p></li>
 </ul>
 <h2 id="system-architecture">System Architecture</h2>
 <p>The architectural block diagram (refer to the provided diagram) outlines the main components of the system:</p>
 <ul>
-<li><p><strong>CC3200 Launchpad</strong>: The core processing unit, handling sound signal processing and communication.</p></li>
-<li><p><strong>Microphone</strong>: Integrated microphone placed in the room to capture sound.</p></li>
-<li><p><strong>OLED Display</strong>: Displays the state of the machine in the program and is the GUI for users.</p></li>
-<li><p><strong>WiFi Module</strong>: Onboard the CC3200 Launchpad, used for sending email notifications via AWS IoT.</p></li>
-<li><p><strong>IR signal Module</strong>: The Universal TV remote sends signals to the IR receiver, used for sending start and stop commands to the device.</p></li>
+  <li><p><strong>CC3200 Launchpad</strong>: The core processing unit, handling sound signal processing and communication.</p></li>
+  <li><p><strong>Microphone</strong>: Integrated microphone placed in the room to capture sound.</p></li>
+  <li><p><strong>OLED Display</strong>: Displays the state of the machine in the program and is the GUI for users.</p></li>
+  <li><p><strong>WiFi Module</strong>: Onboard the CC3200 Launchpad, used for sending email notifications via AWS IoT.</p></li>
+  <li><p><strong>IR signal Module</strong>: The Universal TV remote sends signals to the IR receiver, used for sending start and stop commands to the device.</p></li>
 </ul>
 <p>Each component interacts as follows:</p>
 <ul>
-<li><p>The <strong>CC3200 Launchpad</strong> acts as the head of the system as all information between parts passes through various communication methods.</p></li>
-<li><p>The <strong>OLED display</strong> acts as the GUI terminal for the User to interact with the system and to understand which state the machine is in.</p></li>
-<li><p>The <strong>IR signal Module</strong> captures signals sent by the universal TV remote controller to receive input from the User for the system.</p></li>
-<li><p>The <strong>microphone</strong> captures sound levels and sends the data to the CC3200 Launchpad through the ADC input pins.</p></li>
-<li><p>The <strong>WiFi module</strong> that is embedded on the board communicates with AWS IoT to send an email notification with the state and volume information.</p></li>
+  <li><p>The <strong>CC3200 Launchpad</strong> acts as the head of the system as all information between parts passes through various communication methods.</p></li>
+  <li><p>The <strong>OLED display</strong> acts as the GUI terminal for the User to interact with the system and to understand which state the machine is in.</p></li>
+  <li><p>The <strong>IR signal Module</strong> captures signals sent by the universal TV remote controller to receive input from the User for the system.</p></li>
+  <li><p>The <strong>microphone</strong> captures sound levels and sends the data to the CC3200 Launchpad through the ADC input pins.</p></li>
+  <li><p>The <strong>WiFi module</strong> that is embedded on the board communicates with AWS IoT to send an email notification with the state and volume information.</p></li>
 </ul>
 <figure id="fig:enter-label">
-<img src="EEC172FinalProjectPics/EEC172FinalProjectPic1.png" alt="High level block diagram showing how each of the parts of the system interact with one another" />
-<figcaption>A High level block diagram showing how each of the parts of the system interact with one another</figcaption>
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic1.png" alt="High level block diagram showing how each of the parts of the system interact with one another" />
+  <figcaption>A High level block diagram showing how each of the parts of the system interact with one another</figcaption>
 </figure>
 <figure id="fig:enter-label">
-<img src="EEC172FinalProjectPics/EEC172FinalProjectPic5.png" alt="State Diagram showing how the system will flow through its high-level behavior" />
-<figcaption>A State Diagram showing how the system will flow through its high-level behavior</figcaption>
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic5.png" alt="State Diagram showing how the system will flow through its high-level behavior" />
+  <figcaption>A State Diagram showing how the system will flow through its high-level behavior</figcaption>
 </figure>
 <h1 id="implementation">Implementation</h1>
 <p>In the hardware side, connected all the materials we needed. Specifically, connect the IR module for remote controller to one of GPIO pins of the CC3200 launchpad, connect the SPI pins of the CC3200 Launchpad, in this case you don’t need to connect the MISO pin since they are not communicating just master (launchpad) sends messages to display OLED, connect the microcontroller to one of the ADC pins of the launchpad, and WiFi module to connect AWS is already implemented in the CC3200 launchpad.</p>
 <p>In order to use the microphone, we needed to implement the circuit using op-amp, resistor, and capacitor. Also, since the maximum input voltage for CC3200 Launchpad ADC pin was 1.8V, we used the op-amp to control the maximum output voltage from the microphone.</p>
 <p><strong>Circuit Diagram for microphone:</strong></p>
 <figure class="center">
-<img src="EEC172FinalProjectPics/Microphone Circuit diagram.png" alt="Circuit Diagram for microphone" />
-<figcaption>Circuit Diagram for microphone</figcaption>
+  <img src="EEC172FinalProjectPics/Microphone Circuit diagram.png" alt="Circuit Diagram for microphone" />
+  <figcaption>Circuit Diagram for microphone</figcaption>
 </figure>
 <p>On the software side, we implemented the program for the IR module, OLED, microphone, and HTTP server to AWS. For the IR module for the remote controller, we captured all signal data from the remote controller when a button was pressed, then decoded the signals to figure out which button was pressed. After decoding them, we used the GPIO handler to interrupt whenever the button is pressed. For the OLED, we programmed for communication through the SPI protocol. We decided the pins of the OLED, then programmed according to the order of SPI pins to send messages to the OLED. Then we programmed to display on the OLED. For the microphone, we programmed to convert to digital from the ADC pin. We found the voltage value when the noise sounds were going on, then whenever it detected a loud sound it sent a message to AWS to send an email. For AWS, we built (IoT) Internet of Things on AWS then downloaded the keys to let the CC3200 launchpad access the IoT. Whenever loud sounds were detected, the CC3200 launchpad put the message on AWS then AWS sent an email for the loud sound notification.</p>
 <p>The project will be implemented in phases with the following goals:</p>
 <h2 id="minimal-goals">Minimal Goals</h2>
 <ul>
-<li><p>Successfully detect sound levels from the microphone.</p></li>
-<li><p>Display detected sound location on the OLED screen.</p></li>
+  <li><p>Successfully detect sound levels from the microphone.</p></li>
+  <li><p>Display detected sound location on the OLED screen.</p></li>
 </ul>
 <h2 id="target-goals">Target Goals</h2>
 <ul>
-<li><p>Implement accurate location detection of sound within the room.</p></li>
-<li><p>Send email notifications with sound location information.</p></li>
+  <li><p>Implement accurate location detection of sound within the room.</p></li>
+  <li><p>Send email notifications with sound location information.</p></li>
 </ul>
 <h2 id="stretch-goals">Stretch Goals</h2>
 <ul>
-<li><p>Enhance the system to filter out background noise and detect only significant sounds.</p></li>
+  <li><p>Enhance the system to filter out background noise and detect only significant sounds.</p></li>
 </ul>
 <figure id="fig:enter-label">
-<img src="EEC172FinalProjectPics/EEC172FinalProjectPic2.png" alt="State Diagram" />
-<figcaption>State Diagram</figcaption>
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic2.png" alt="State Diagram" />
+  <figcaption>State Diagram</figcaption>
 </figure>
 <h1 id="challenges">Challenges</h1>
 <p>During the implementation of the baby monitor system, we faced several challenges that required thoughtful analysis and problem-solving strategies. This section discusses these challenges, the observations made, the thought processes involved, and the steps taken to address them.</p>
@@ -233,17 +250,14 @@
 </tbody>
 </table>
 <figure id="fig:enter-label">
-<img src="EEC172FinalProjectPics/EEC172FinalProjectPic4.jpg" alt="The microphone module of the project" />
-<figcaption>The microphone module of the project</figcaption>
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic4.jpg" alt="The microphone module of the project" />
+  <figcaption>The microphone module of the project</figcaption>
 </figure>
 <h1 id="demo-video">Demo Video</h1>
 <p>Below is a demonstration video of our final project:</p>
-<figure class="center">
-<video controls>
-  <source src="https://drive.google.com/file/d/1zgclyy8_V1aOdMFwI2FKzSbhI3cmvEji/view?usp=sharing" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-<figcaption>Project Demo Video</figcaption>
+<figure class="video-container">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/JTQEV4kjZCw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <figcaption>Project Demo Video</figcaption>
 </figure>
 </body>
 </html>

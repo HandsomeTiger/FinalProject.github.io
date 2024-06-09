@@ -12,66 +12,54 @@
       color: #333;
       background-color: #f4f4f4;
       font-family: 'Roboto', sans-serif;
-      line-height: 1.6;
     }
     body {
       margin: 0 auto;
-      max-width: 900px;
+      max-width: 800px;
       padding: 2rem;
       background-color: #fff;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
     }
     h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.5em;
-      color: #007acc;
-      line-height: 1.2;
+      margin-top: 1.4em;
+      color: #333;
     }
     p {
       margin: 1em 0;
-      line-height: 1.8;
-      color: #555;
+      line-height: 1.6;
     }
     a {
       color: #007acc;
-      text-decoration: none;
-      border-bottom: 1px solid #007acc;
-    }
-    a:hover {
-      text-decoration: underline;
     }
     img {
       max-width: 100%;
       display: block;
-      margin: 1.5em 0;
+      margin: 1em 0;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     figure {
       text-align: center;
-      margin: 2em 0;
+      margin: 1em 0;
     }
     figcaption {
       font-style: italic;
       color: #666;
     }
     table {
-      margin: 2em 0;
+      margin: 1em 0;
       border-collapse: collapse;
       width: 100%;
       border: 1px solid #ddd;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
     table caption {
       margin-bottom: 0.75em;
       font-weight: bold;
-      font-size: 1.2em;
-      color: #007acc;
     }
     th, td {
-      padding: 1em;
+      padding: 0.75em;
       border: 1px solid #ddd;
       text-align: center;
     }
@@ -90,30 +78,25 @@
       padding: 1em;
       border-radius: 4px;
       overflow: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
     blockquote {
-      margin: 1.5em 0;
+      margin: 1em 0;
       padding-left: 1em;
-      border-left: 4px solid #007acc;
+      border-left: 4px solid #ccc;
       color: #666;
-      font-style: italic;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
     hr {
       border: none;
       height: 1px;
       background-color: #ddd;
-      margin: 3em 0;
+      margin: 2em 0;
     }
     @media (max-width: 600px) {
       body {
         padding: 1em;
       }
       h1 {
-        font-size: 1.8em;
+        font-size: 1.5em;
       }
     }
     .video-container {
@@ -124,184 +107,157 @@
       width: 100%;
       height: 450px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     .center {
       text-align: center;
     }
-    .header {
-      text-align: center;
-      margin-bottom: 3em;
-    }
-    .header h1 {
-      font-size: 2.5em;
-      color: #007acc;
-    }
-    .header p {
-      font-size: 1.2em;
-      color: #666;
-    }
   </style>
 </head>
 <body>
-<header class="header">
-  <h1>Final Project: Baby Monitor utilizing integrated microphone and CC3200 Launchpad</h1>
-  <p>Marcos Alvear and Donggeon Kim</p>
+<header id="title-block-header">
+  <h1 class="title">Final Project: Baby Monitor utilizing integrated microphone and CC3200 Launchpad</h1>
+  <p class="author">Marcos Alvear and Donggeon Kim</p>
 </header>
-<section>
-  <h1 id="description">Description</h1>
-  <p>This project aims to prototype a device that utilizes a simple microphone that will be integrated with an external circuit that will be mounted in a corner of a room to analyze and notify the user of a loud noise/cry. The system leverages the CC3200 Launchpad for processing and is the center of communication between all the parts of the system like the OLED screen, the TV remote User input, and the email push notifications. Utilizing the CC3200’s onboard WiFi module we will communicate with AWS IoT for email notifications that will contain the machine states and volume detected level. This information will also be displayed on an OLED screen using SPI communication and will be the GUI for the User to interact with the system. The user will interact with the device using a Universal TV remote that will interact with the system via an IR signal receiving circuit, making the system an easy to use and set up system that can be utilized in a family home.</p>
-</section>
-<section>
-  <h1 id="design">Design</h1>
-  <h2 id="functional-specification">Functional Specification</h2>
-  <p>The high-level behavior of the product is represented through a state machine. The system transitions through states based on the sound signals detected by the microphones, processing these signals to determine the sound’s location.</p>
-  <ul>
-    <li><p><strong>Idle State</strong>: The system waits for the User sent TV remote start signal to begin monitoring.</p></li>
-    <li><p><strong>Monitoring State</strong>: Upon activation with the ST command, the system continuously monitors sound levels through the integrated microphone.</p></li>
-    <li><p><strong>Detection State</strong>: When a loud noise is detected, the system will send an email notification containing the state and volume information.</p></li>
-    <li><p><strong>Notification State</strong>: The system updates the OLED display with the “baby is crying” screen and triggers the LEDs to flash.</p></li>
-    <li><p><strong>Reset State</strong>: After input from the User, the system resets and returns to the Monitoring State for further detections.</p></li>
-  </ul>
-  <h2 id="system-architecture">System Architecture</h2>
-  <p>The architectural block diagram (refer to the provided diagram) outlines the main components of the system:</p>
-  <ul>
-    <li><p><strong>CC3200 Launchpad</strong>: The core processing unit, handling sound signal processing and communication.</p></li>
-    <li><p><strong>Microphone</strong>: Integrated microphone placed in the room to capture sound.</p></li>
-    <li><p><strong>OLED Display</strong>: Displays the state of the machine in the program and is the GUI for users.</p></li>
-    <li><p><strong>WiFi Module</strong>: Onboard the CC3200 Launchpad, used for sending email notifications via AWS IoT.</p></li>
-    <li><p><strong>IR signal Module</strong>: The Universal TV remote sends signals to the IR receiver, used for sending start and stop commands to the device.</p></li>
-  </ul>
-  <p>Each component interacts as follows:</p>
-  <ul>
-    <li><p>The <strong>CC3200 Launchpad</strong> acts as the head of the system as all information between parts passes through various communication methods.</p></li>
-    <li><p>The <strong>OLED display</strong> acts as the GUI terminal for the User to interact with the system and to understand which state the machine is in.</p></li>
-    <li><p>The <strong>IR signal Module</strong> captures signals sent by the universal TV remote controller to receive input from the User for the system.</p></li>
-    <li><p>The <strong>microphone</strong> captures sound levels and sends the data to the CC3200 Launchpad through the ADC input pins.</p></li>
-    <li><p>The <strong>WiFi module</strong> that is embedded on the board communicates with AWS IoT to send an email notification with the state and volume information.</p></li>
-  </ul>
-  <figure>
-    <img src="EEC172FinalProjectPics/EEC172FinalProjectPic1.png" alt="High level block diagram showing how each of the parts of the system interact with one another" />
-    <figcaption>A High level block diagram showing how each of the parts of the system interact with one another</figcaption>
-  </figure>
-  <figure>
-    <img src="EEC172FinalProjectPics/EEC172FinalProjectPic5.png" alt="State Diagram showing how the system will flow through its high-level behavior" />
-    <figcaption>A State Diagram showing how the system will flow through its high-level behavior</figcaption>
-  </figure>
-</section>
-<section>
-  <h1 id="implementation">Implementation</h1>
-  <p>On the hardware side, we connected all the necessary materials. Specifically, we connected the IR module for the remote controller to one of the GPIO pins of the CC3200 launchpad, the SPI pins of the CC3200 Launchpad (in this case, you don’t need to connect the MISO pin since they are not communicating; just the master (launchpad) sends messages to display OLED), the microcontroller to one of the ADC pins of the launchpad, and the WiFi module to connect to AWS, which is already implemented in the CC3200 launchpad.</p>
-  <p>To use the microphone, we implemented the circuit using an op-amp, resistor, and capacitor. Also, since the maximum input voltage for the CC3200 Launchpad ADC pin was 1.8V, we used the op-amp to control the maximum output voltage from the microphone.</p>
-  <p><strong>Circuit Diagram for microphone:</strong></p>
-  <figure class="center">
-    <img src="EEC172FinalProjectPics/Microphone_Circuit_diagram.png" alt="Circuit Diagram for microphone" />
-    <figcaption>Circuit Diagram for microphone</figcaption>
-  </figure>
-  <p>On the software side, we implemented the program for the IR module, OLED, microphone, and HTTP server to AWS. For the IR module for the remote controller, we captured all signal data from the remote controller when a button was pressed, then decoded the signals to figure out which button was pressed. After decoding them, we used the GPIO handler to interrupt whenever the button is pressed. For the OLED, we programmed for communication through the SPI protocol. We decided the pins of the OLED, then programmed according to the order of SPI pins to send messages to the OLED. Then we programmed to display on the OLED. For the microphone, we programmed to convert to digital from the ADC pin. We found the voltage value when the noise sounds were going on, then whenever it detected a loud sound it sent a message to AWS to send an email. For AWS, we built (IoT) Internet of Things on AWS then downloaded the keys to let the CC3200 launchpad access the IoT. Whenever loud sounds were detected, the CC3200 launchpad put the message on AWS then AWS sent an email for the loud sound notification.</p>
-  <p>The project will be implemented in phases with the following goals:</p>
-  <h2 id="minimal-goals">Minimal Goals</h2>
-  <ul>
-    <li><p>Successfully detect sound levels from the microphone.</p></li>
-    <li><p>Display detected sound location on the OLED screen.</p></li>
-  </ul>
-  <h2 id="target-goals">Target Goals</h2>
-  <ul>
-    <li><p>Implement accurate location detection of sound within the room.</p></li>
-    <li><p>Send email notifications with sound location information.</p></li>
-  </ul>
-  <h2 id="stretch-goals">Stretch Goals</h2>
-  <ul>
-    <li><p>Enhance the system to filter out background noise and detect only significant sounds.</p></li>
-  </ul>
-  <figure>
-    <img src="EEC172FinalProjectPics/EEC172FinalProjectPic2.png" alt="State Diagram" />
-    <figcaption>State Diagram</figcaption>
-  </figure>
-</section>
-<section>
-  <h1 id="challenges">Challenges</h1>
-  <p>During the implementation of the baby monitor system, we faced several challenges that required thoughtful analysis and problem-solving strategies. This section discusses these challenges, the observations made, the thought processes involved, and the steps taken to address them.</p>
-  <h2 id="microphone-voltage-compatibility">Microphone Voltage Compatibility</h2>
-  <p>One of the initial challenges we encountered was the voltage compatibility between the microphone module and the ADC pins on the CC3200 Launchpad. The microphone module we intended to use operated at a maximum voltage of 5V, whereas the ADC pins on the CC3200 Launchpad could only handle a maximum voltage of 1.8V. Connecting the microphone directly to the ADC pins risked damaging the Launchpad.</p>
-  <p><strong>Solution:</strong> To address this issue, we decided to use a voltage limiter circuit to cap the voltage at 1.8V before feeding the signal into the ADC pins. This involved using components to ensure the voltage remained within safe limits. After implementing the voltage limiter, we successfully interfaced the microphone with the CC3200 without exceeding the ADC pin voltage threshold.</p>
-  <h2 id="adc-pin-functionality">ADC Pin Functionality</h2>
-  <p>Another significant challenge was the inconsistent functionality of the ADC pins. Some ADC pins did not appear to work correctly, leading to unreliable sound level readings from the microphone. This inconsistency hindered our ability to obtain accurate sound data.</p>
-  <p><strong>Solution:</strong> We conducted a systematic troubleshooting process to identify functional ADC pins. This involved testing each ADC pin individually with a known voltage input and observing the output. Pins that did not provide accurate readings or any readings at all were ruled out. We eventually identified a set of functional ADC pins that would work for the individual microphone but no other microphones could be incorporated. We then adjusted our circuit design to use only the verified ADC pins, which improved the reliability and functionality of our sound detection.</p>
-  <h2 id="flashing-the-program-to-the-cc3200-board">Flashing the Program to the CC3200 Board</h2>
-  <p>Flashing the program to the CC3200 board presented another major challenge. Initially, the program would only run correctly when executed directly from the laptop. Attempts to flash the program to the board for standalone operation were unsuccessful, which limited the system’s usability.</p>
-  <p><strong>Solution:</strong> After numerous troubleshooting attempts, including verifying connections, updating firmware, and re-flashing the program, we concluded that the issue might lie with the hardware itself. We decided to use a new CC3200 board, which resolved the issue. The program flashed correctly and ran independently of the laptop. We hypothesized that the initial board might have had hardware defects, such as faulty flash memory or corrupted bootloader firmware, which prevented successful flashing.</p>
-  <h2 id="general-debugging-and-integration-issues">General Debugging and Integration Issues</h2>
-  <p>Throughout the project, we encountered various debugging and integration issues, such as synchronization problems between the microphone input and the OLED display updates, and occasional failures in sending notifications through AWS IoT due to network errors.</p>
-  <p>These challenges provided valuable learning experiences and highlighted the importance of thorough testing, systematic troubleshooting, and adaptability in project development. Despite the difficulties, we successfully developed a functional baby monitor system that met the project requirements.</p>
-</section>
-<section>
-  <h1 id="future-work">Future Work</h1>
-  <p>While the current implementation of the baby monitor system successfully detects loud noises and sends notifications, several additional features and improvements can enhance its efficiency and performance.</p>
-  <h2 id="additional-microphones">Additional Microphones</h2>
-  <p>Integrating more microphones into the system can significantly improve the accuracy of sound detection and location. With a greater number of microphones, the system can better triangulate the sound source, providing more precise information about the location of the noise within the room. This enhancement would require additional ADC channels on the CC3200 Launchpad and more sophisticated signal processing algorithms to analyze the inputs from multiple microphones.</p>
-  <h2 id="d-printed-casing">3D-Printed Casing</h2>
-  <p>A custom 3D-printed casing to house the electronics can provide better protection and organization for the components. The casing can be designed to include proper ventilation for the microphone and IR receiver, as well as secure mounting points for the CC3200 Launchpad and OLED display. Additionally, a well-designed casing can improve the aesthetic appeal of the device, making it more suitable for use in a family home environment.</p>
-  <h2 id="displaying-volume-levels-on-oled">Displaying Volume Levels on OLED</h2>
-  <p>Adding functionality to display real-time volume levels on the OLED screen can provide users with immediate visual feedback on the noise detected by the system. This feature would involve updating the OLED display code to include a graphical representation of the volume levels, such as a bar graph or numerical readout. This enhancement can help users quickly assess the noise environment in the room and understand the severity of the detected sounds.</p>
-  <h2 id="advanced-sound-filtering">Advanced Sound Filtering</h2>
-  <p>Implementing advanced sound filtering algorithms can improve the system’s ability to distinguish between background noise and significant sounds, such as a baby’s cry. Techniques such as noise reduction, adaptive filtering, and machine learning-based sound classification can be explored to enhance the reliability of sound detection. This improvement would require additional computational resources and potentially more advanced processing capabilities on the CC3200 Launchpad or an auxiliary processing unit.</p>
-  <h2 id="integration-with-smart-home-systems">Integration with Smart Home Systems</h2>
-  <p>Future work could also explore the integration of the baby monitor system with existing smart home ecosystems, such as Amazon Alexa or Google Home. This integration can enable voice commands to control the system and allow notifications to be sent through smart home devices. Additionally, the system could be configured to trigger other smart home actions, such as turning on lights or playing a lullaby when a loud noise is detected.</p>
-  <p>By incorporating these additional features and improvements, the baby monitor system can become a more robust, user-friendly, and efficient solution for monitoring a baby’s environment and providing timely notifications to caregivers.</p>
-</section>
-<section>
-  <h1 id="bill-of-materials">Bill of Materials</h1>
-  <p>The anticipated materials and their costs are listed below:</p>
-  <table>
-    <caption>Bill of Materials</caption>
-    <thead>
-      <tr class="header">
-        <th style="text-align: center;"><strong>Component</strong></th>
-        <th style="text-align: center;"><strong>Cost</strong></th>
-        <th style="text-align: center;"><strong>Source</strong></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="odd">
-        <td style="text-align: center;">CC3200 Launchpad</td>
-        <td style="text-align: center;">$0.00</td>
-        <td style="text-align: center;">Class Provided</td>
-      </tr>
-      <tr class="even">
-        <td style="text-align: center;">OLED Display</td>
-        <td style="text-align: center;">$0.00</td>
-        <td style="text-align: center;">Class Provided</td>
-      </tr>
-      <tr class="odd">
-        <td style="text-align: center;">IR Circuit and Remote Control</td>
-        <td style="text-align: center;">$0.00</td>
-        <td style="text-align: center;">Class Provided</td>
-      </tr>
-      <tr class="even">
-        <td style="text-align: center;">Microphone</td>
-        <td style="text-align: center;">$1.25</td>
-        <td style="text-align: center;">Amazon</td>
-      </tr>
-      <tr class="odd">
-        <td style="text-align: center;">Miscellaneous (Wires, Breadboard, etc.)</td>
-        <td style="text-align: center;">$10.00</td>
-        <td style="text-align: center;">Amazon</td>
-      </tr>
-    </tbody>
-  </table>
-  <figure>
-    <img src="EEC172FinalProjectPics/EEC172FinalProjectPic4.jpg" alt="The microphone module of the project" />
-    <figcaption>The microphone module of the project</figcaption>
-  </figure>
-</section>
-<section>
-  <h1 id="demo-video">Demo Video</h1>
-  <p>Below is a demonstration video of our final project:</p>
-  <figure class="video-container">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/JTQEV4kjZCw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    <figcaption>Project Demo Video</figcaption>
-  </figure>
-</section>
+<h1 id="description">Description</h1>
+<p>This project aims to prototype a device that utilizes a simple microphone that will be integrated with an external circuit that will be mounted in a corner of a room to analyze and notify the user of a loud noise/cry. The system leverages the CC3200 Launchpad for processing and is the center of communication between all the parts of the system like the OLED screen, the TV remote User input, and the email push notifications. Utilizing the CC3200’s onboard WiFi module we will communicate with AWS IoT for email notifications that will contain the machine states and volume detected level. This information will also be displayed on an OLED screen using SPI communication and will be the GUI for the User to interact with the system. The user will interact with the device using a Universal TV remote that will interact with the system via an IR signal receiving circuit, making the system an easy to use and set up system that can be utilized in a family home.</p>
+<h1 id="design">Design</h1>
+<h2 id="functional-specification">Functional Specification</h2>
+<p>The high-level behavior of the product is represented through a state machine. The system transitions through states based on the sound signals detected by the microphones, processing these signals to determine the sound’s location.</p>
+<ul>
+  <li><p><strong>Idle State</strong>: The system waits for the User sent TV remote start signal to begin monitoring.</p></li>
+  <li><p><strong>Monitoring State</strong>: Upon activation with the ST command, the system continuously monitors sound levels through the integrated microphone.</p></li>
+  <li><p><strong>Detection State</strong>: When a loud noise is detected, the system will send an email notification containing the state and volume information.</p></li>
+  <li><p><strong>Notification State</strong>: The system updates the OLED display with the “baby is crying” screen and triggers the LEDs to flash.</p></li>
+  <li><p><strong>Reset State</strong>: After input from the User, the system resets and returns to the Monitoring State for further detections.</p></li>
+</ul>
+<h2 id="system-architecture">System Architecture</h2>
+<p>The architectural block diagram (refer to the provided diagram) outlines the main components of the system:</p>
+<ul>
+  <li><p><strong>CC3200 Launchpad</strong>: The core processing unit, handling sound signal processing and communication.</p></li>
+  <li><p><strong>Microphone</strong>: Integrated microphone placed in the room to capture sound.</p></li>
+  <li><p><strong>OLED Display</strong>: Displays the state of the machine in the program and is the GUI for users.</p></li>
+  <li><p><strong>WiFi Module</strong>: Onboard the CC3200 Launchpad, used for sending email notifications via AWS IoT.</p></li>
+  <li><p><strong>IR signal Module</strong>: The Universal TV remote sends signals to the IR receiver, used for sending start and stop commands to the device.</p></li>
+</ul>
+<p>Each component interacts as follows:</p>
+<ul>
+  <li><p>The <strong>CC3200 Launchpad</strong> acts as the head of the system as all information between parts passes through various communication methods.</p></li>
+  <li><p>The <strong>OLED display</strong> acts as the GUI terminal for the User to interact with the system and to understand which state the machine is in.</p></li>
+  <li><p>The <strong>IR signal Module</strong> captures signals sent by the universal TV remote controller to receive input from the User for the system.</p></li>
+  <li><p>The <strong>microphone</strong> captures sound levels and sends the data to the CC3200 Launchpad through the ADC input pins.</p></li>
+  <li><p>The <strong>WiFi module</strong> that is embedded on the board communicates with AWS IoT to send an email notification with the state and volume information.</p></li>
+</ul>
+<figure id="fig:enter-label">
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic1.png" alt="High level block diagram showing how each of the parts of the system interact with one another" />
+  <figcaption>A High level block diagram showing how each of the parts of the system interact with one another</figcaption>
+</figure>
+<figure id="fig:enter-label">
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic5.png" alt="State Diagram showing how the system will flow through its high-level behavior" />
+  <figcaption>A State Diagram showing how the system will flow through its high-level behavior</figcaption>
+</figure>
+<h1 id="implementation">Implementation</h1>
+<p>In the hardware side, connected all the materials we needed. Specifically, connect the IR module for remote controller to one of GPIO pins of the CC3200 launchpad, connect the SPI pins of the CC3200 Launchpad, in this case you don’t need to connect the MISO pin since they are not communicating just master (launchpad) sends messages to display OLED, connect the microcontroller to one of the ADC pins of the launchpad, and WiFi module to connect AWS is already implemented in the CC3200 launchpad.</p>
+<p>In order to use the microphone, we needed to implement the circuit using op-amp, resistor, and capacitor. Also, since the maximum input voltage for CC3200 Launchpad ADC pin was 1.8V, we used the op-amp to control the maximum output voltage from the microphone.</p>
+<p><strong>Circuit Diagram for microphone:</strong></p>
+<figure class="center">
+  <img src="EEC172FinalProjectPics/Microphone Circuit diagram.png" alt="Circuit Diagram for microphone" />
+  <figcaption>Circuit Diagram for microphone</figcaption>
+</figure>
+<p>On the software side, we implemented the program for the IR module, OLED, microphone, and HTTP server to AWS. For the IR module for the remote controller, we captured all signal data from the remote controller when a button was pressed, then decoded the signals to figure out which button was pressed. After decoding them, we used the GPIO handler to interrupt whenever the button is pressed. For the OLED, we programmed for communication through the SPI protocol. We decided the pins of the OLED, then programmed according to the order of SPI pins to send messages to the OLED. Then we programmed to display on the OLED. For the microphone, we programmed to convert to digital from the ADC pin. We found the voltage value when the noise sounds were going on, then whenever it detected a loud sound it sent a message to AWS to send an email. For AWS, we built (IoT) Internet of Things on AWS then downloaded the keys to let the CC3200 launchpad access the IoT. Whenever loud sounds were detected, the CC3200 launchpad put the message on AWS then AWS sent an email for the loud sound notification.</p>
+<p>The project will be implemented in phases with the following goals:</p>
+<h2 id="minimal-goals">Minimal Goals</h2>
+<ul>
+  <li><p>Successfully detect sound levels from the microphone.</p></li>
+  <li><p>Display detected sound location on the OLED screen.</p></li>
+</ul>
+<h2 id="target-goals">Target Goals</h2>
+<ul>
+  <li><p>Implement accurate location detection of sound within the room.</p></li>
+  <li><p>Send email notifications with sound location information.</p></li>
+</ul>
+<h2 id="stretch-goals">Stretch Goals</h2>
+<ul>
+  <li><p>Enhance the system to filter out background noise and detect only significant sounds.</p></li>
+</ul>
+<figure id="fig:enter-label">
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic2.png" alt="State Diagram" />
+  <figcaption>State Diagram</figcaption>
+</figure>
+<h1 id="challenges">Challenges</h1>
+<p>During the implementation of the baby monitor system, we faced several challenges that required thoughtful analysis and problem-solving strategies. This section discusses these challenges, the observations made, the thought processes involved, and the steps taken to address them.</p>
+<h2 id="microphone-voltage-compatibility">Microphone Voltage Compatibility</h2>
+<p>One of the initial challenges we encountered was the voltage compatibility between the microphone module and the ADC pins on the CC3200 Launchpad. The microphone module we intended to use operated at a maximum voltage of 5V, whereas the ADC pins on the CC3200 Launchpad could only handle a maximum voltage of 1.8V. Connecting the microphone directly to the ADC pins risked damaging the Launchpad.</p>
+<p><strong>Solution:</strong> To address this issue, we decided to use a voltage limiter circuit to cap the voltage at 1.8V before feeding the signal into the ADC pins. This involved using components to ensure the voltage remained within safe limits. After implementing the voltage limiter, we successfully interfaced the microphone with the CC3200 without exceeding the ADC pin voltage threshold.</p>
+<h2 id="adc-pin-functionality">ADC Pin Functionality</h2>
+<p>Another significant challenge was the inconsistent functionality of the ADC pins. Some ADC pins did not appear to work correctly, leading to unreliable sound level readings from the microphone. This inconsistency hindered our ability to obtain accurate sound data.</p>
+<p><strong>Solution:</strong> We conducted a systematic troubleshooting process to identify functional ADC pins. This involved testing each ADC pin individually with a known voltage input and observing the output. Pins that did not provide accurate readings or any readings at all were ruled out. We eventually identified a set of functional ADC pins that would work for the individual microphone but no other microphones could be incorporated. We then adjusted our circuit design to use only the verified ADC pins, which improved the reliability and functionality of our sound detection.</p>
+<h2 id="flashing-the-program-to-the-cc3200-board">Flashing the Program to the CC3200 Board</h2>
+<p>Flashing the program to the CC3200 board presented another major challenge. Initially, the program would only run correctly when executed directly from the laptop. Attempts to flash the program to the board for standalone operation were unsuccessful, which limited the system’s usability.</p>
+<p><strong>Solution:</strong> After numerous troubleshooting attempts, including verifying connections, updating firmware, and re-flashing the program, we concluded that the issue might lie with the hardware itself. We decided to use a new CC3200 board, which resolved the issue. The program flashed correctly and ran independently of the laptop. We hypothesized that the initial board might have had hardware defects, such as faulty flash memory or corrupted bootloader firmware, which prevented successful flashing.</p>
+<h2 id="general-debugging-and-integration-issues">General Debugging and Integration Issues</h2>
+<p>Throughout the project, we encountered various debugging and integration issues, such as synchronization problems between the microphone input and the OLED display updates, and occasional failures in sending notifications through AWS IoT due to network errors.</p>
+<p>These challenges provided valuable learning experiences and highlighted the importance of thorough testing, systematic troubleshooting, and adaptability in project development. Despite the difficulties, we successfully developed a functional baby monitor system that met the project requirements.</p>
+<h1 id="future-work">Future Work</h1>
+<p>While the current implementation of the baby monitor system successfully detects loud noises and sends notifications, several additional features and improvements can enhance its efficiency and performance.</p>
+<h2 id="additional-microphones">Additional Microphones</h2>
+<p>Integrating more microphones into the system can significantly improve the accuracy of sound detection and location. With a greater number of microphones, the system can better triangulate the sound source, providing more precise information about the location of the noise within the room. This enhancement would require additional ADC channels on the CC3200 Launchpad and more sophisticated signal processing algorithms to analyze the inputs from multiple microphones.</p>
+<h2 id="d-printed-casing">3D-Printed Casing</h2>
+<p>A custom 3D-printed casing to house the electronics can provide better protection and organization for the components. The casing can be designed to include proper ventilation for the microphone and IR receiver, as well as secure mounting points for the CC3200 Launchpad and OLED display. Additionally, a well-designed casing can improve the aesthetic appeal of the device, making it more suitable for use in a family home environment.</p>
+<h2 id="displaying-volume-levels-on-oled">Displaying Volume Levels on OLED</h2>
+<p>Adding functionality to display real-time volume levels on the OLED screen can provide users with immediate visual feedback on the noise detected by the system. This feature would involve updating the OLED display code to include a graphical representation of the volume levels, such as a bar graph or numerical readout. This enhancement can help users quickly assess the noise environment in the room and understand the severity of the detected sounds.</p>
+<h2 id="advanced-sound-filtering">Advanced Sound Filtering</h2>
+<p>Implementing advanced sound filtering algorithms can improve the system’s ability to distinguish between background noise and significant sounds, such as a baby’s cry. Techniques such as noise reduction, adaptive filtering, and machine learning-based sound classification can be explored to enhance the reliability of sound detection. This improvement would require additional computational resources and potentially more advanced processing capabilities on the CC3200 Launchpad or an auxiliary processing unit.</p>
+<h2 id="integration-with-smart-home-systems">Integration with Smart Home Systems</h2>
+<p>Future work could also explore the integration of the baby monitor system with existing smart home ecosystems, such as Amazon Alexa or Google Home. This integration can enable voice commands to control the system and allow notifications to be sent through smart home devices. Additionally, the system could be configured to trigger other smart home actions, such as turning on lights or playing a lullaby when a loud noise is detected.</p>
+<p>By incorporating these additional features and improvements, the baby monitor system can become a more robust, user-friendly, and efficient solution for monitoring a baby’s environment and providing timely notifications to caregivers.</p>
+<h1 id="bill-of-materials">Bill of Materials</h1>
+<p>The anticipated materials and their costs are listed below:</p>
+<table>
+<caption>Bill of Materials</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Component</strong></th>
+<th style="text-align: center;"><strong>Cost</strong></th>
+<th style="text-align: center;"><strong>Source</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">CC3200 Launchpad</td>
+<td style="text-align: center;">$0.00</td>
+<td style="text-align: center;">Class Provided</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">OLED Display</td>
+<td style="text-align: center;">$0.00</td>
+<td style="text-align: center;">Class Provided</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">IR Circuit and Remote Control</td>
+<td style="text-align: center;">$0.00</td>
+<td style="text-align: center;">Class Provided</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Microphone</td>
+<td style="text-align: center;">$1.25</td>
+<td style="text-align: center;">Amazon</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Miscellaneous (Wires, Breadboard, etc.)</td>
+<td style="text-align: center;">$10.00</td>
+<td style="text-align: center;">Amazon</td>
+</tr>
+</tbody>
+</table>
+<figure id="fig:enter-label">
+  <img src="EEC172FinalProjectPics/EEC172FinalProjectPic4.jpg" alt="The microphone module of the project" />
+  <figcaption>The microphone module of the project</figcaption>
+</figure>
+<h1 id="demo-video">Demo Video</h1>
+<p>Below is a demonstration video of our final project:</p>
+<figure class="video-container">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/JTQEV4kjZCw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <figcaption>Project Demo Video</figcaption>
+</figure>
 </body>
 </html>
